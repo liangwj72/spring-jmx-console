@@ -18,6 +18,6 @@ logging:
    level:
       root: error
       demo: ${LOG_LEVEL:debug}
-      com.linagwj: ${LOG_LEVEL:debug}
+      com.liangwj.spring: ${LOG_LEVEL:debug}
    pattern:
       console: '[%thread] %-5level %d{HH:mm:ss} %class{16}:%line - %msg %n'

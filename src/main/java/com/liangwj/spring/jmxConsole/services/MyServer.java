@@ -13,7 +13,7 @@ import org.springframework.web.context.support.AnnotationConfigWebApplicationCon
 import org.springframework.web.servlet.DispatcherServlet;
 
 import com.liangwj.spring.jmxConsole.config.JmxConsoleProperties;
-import com.liangwj.spring.jmxConsole.config.MtWebConfiguration;
+import com.liangwj.spring.jmxConsole.config.MyWebConfiguration;
 
 import jakarta.servlet.ServletRegistration;
 
@@ -46,7 +46,8 @@ public class MyServer implements InitializingBean, DisposableBean, ApplicationCo
 
     private void startJmxConsoleServer() {
         try {
-            logger.info("Starting JMX Console Server on port: {}", properties.getPort());
+            logger.info("==== Starting JMX Console Server on port: {} ====", properties.getPort());
+			logger.info("\tSwagger UI: http://127.0.0.1:{}/swagger-ui/index.html", properties.getPort());
             
             // 创建嵌入式Tomcat服务器
             final TomcatServletWebServerFactory factory = new TomcatServletWebServerFactory();
@@ -58,7 +59,8 @@ public class MyServer implements InitializingBean, DisposableBean, ApplicationCo
                 webContext = new AnnotationConfigWebApplicationContext();
                 webContext.setParent(parentContext);
                 webContext.setServletContext(servletContext);
-                webContext.register(MtWebConfiguration.class);
+                // 注册Web配置（包含手动的OpenAPI端点）
+				webContext.register(MyWebConfiguration.class);
                 webContext.refresh();
                 
                 final DispatcherServlet dispatcherServlet = new DispatcherServlet(webContext);

@@ -28,14 +28,15 @@ public class Application {
 
 	private static final Logger logger = LoggerFactory.getLogger(Application.class);
 
-	@Autowired()
+	@Autowired
 	private ServerProperties serverProp;
 
 	@Autowired(required = false)
 	private JmxConsoleProperties jmxConsoleProp;
 
-	@Autowired
+	@Autowired(required = false)
 	private SwaggerUiConfigProperties swaggerUiConfigProperties;
+
 
 	public static void main(String[] args) {
 		final SpringApplication app = new SpringApplication(Application.class);
@@ -64,14 +65,17 @@ public class Application {
 
 	@PostConstruct
 	protected void init() {
-		if (this.serverProp != null) {
-			logger.info("Demo Web Application listen on http://127.0.0.1:{}", this.serverProp.getPort());
+		logger.info("==== Web Application Start ====");
+		logger.info("\tWeb Application listen on:  http://127.0.0.1:{}", this.serverProp.getPort());
+		if (this.swaggerUiConfigProperties != null) {
+			logger.info("\tWeb Application Swagger UI: http://127.0.0.1:{}{}", this.serverProp.getPort(),
+					this.swaggerUiConfigProperties.getPath());
+		} else {
+			logger.info("\tWeb Application Swagger UI: not enabled");
 		}
 
 		if (this.jmxConsoleProp != null) {
-			logger.info("JMX Console listen on http://127.0.0.1:{}", this.jmxConsoleProp.getPort());
-			logger.info("Swagger UI: http://127.0.0.1:{}{}", this.jmxConsoleProp.getPort(),
-					this.swaggerUiConfigProperties.getPath());
+			logger.info("JMX Console is enabled");
 		} else {
 			logger.info("JMX Console is not enabled");
 		}
