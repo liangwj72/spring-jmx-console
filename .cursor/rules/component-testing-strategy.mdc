@@ -1,0 +1,127 @@
+---
+description: 组件测试策略和集成验证
+globs: src/test/**/*.java,src/test/**/*.yml
+---
+
+# 组件测试策略
+
+## 测试项目结构
+
+### 模拟主项目环境
+测试代码位于`src/test/java/demo`，模拟一个使用JMX Console组件的主项目：
+
+- [Application.java](mdc:src/test/java/demo/Application.java) - 主应用程序
+- [DemoController.java](mdc:src/test/java/demo/DemoController.java) - 主项目的Controller
+- [OpenApiConfig.java](mdc:src/test/java/demo/OpenApiConfig.java) - 主项目的OpenAPI配置
+
+### 集成测试要点
+
+#### 1. Bean冲突验证
+```java
+// 主项目可以有自己的OpenAPI配置
+@Bean
+public OpenAPI mainProjectOpenAPI() {
+    return new OpenAPI().info(new Info().title("Main Project API"));
+}
+
+// JMX Console组件不应创建冲突的Bean
+// 应通过Controller端点提供OpenAPI文档
+```
+
+#### 2. 端口隔离测试
+```yaml
+# 主项目端口
+server:
+  port: 8080
+
+# JMX Console独立端口
+spring-jmx-console:
+  port: 60081
+```
+
+#### 3. OpenAPI隔离验证
+- 主项目的Swagger UI：`http://localhost:8080/swagger-ui.html`
+- JMX Console的Swagger UI：`http://localhost:60081/swagger-ui.html`
+- 两者应完全独立，互不影响
+
+### 测试场景
+
+#### 正常启动测试
+```bash
+# 应用正常启动，无Bean冲突
+mvn exec:java -Dexec.mainClass="demo.Application" -Dexec.classpathScope="test"
+```
+
+#### API文档访问测试
+```bash
+# 主项目API文档（包含主项目和JMX Console的API）
+curl http://localhost:8080/v3/api-docs
+
+# JMX Console独立API文档（只包含JMX Console的API）
+curl http://localhost:60081/v3/api-docs
+```
+
+#### Swagger UI功能测试
+- 主项目Swagger UI能正常显示主项目的API
+- JMX Console Swagger UI只显示JMX Console的API
+- 两个UI界面功能完整，无错误
+
+### 验证标准
+
+#### 1. 启动成功标准
+- [x] 应用启动无异常
+- [x] 无Bean定义冲突错误
+- [x] 两个端口都正常监听
+- [x] 日志显示组件正确加载
+
+#### 2. 功能完整性标准
+- [x] JMX Console API文档包含所有Controller
+- [x] API文档包含完整Schema定义
+- [x] 响应格式与SpringDoc兼容
+- [x] Swagger UI能正常渲染和交互
+
+#### 3. 隔离性标准
+- [x] 主项目API文档不受JMX Console影响
+- [x] JMX Console API文档只包含自己的端点
+- [x] 两个Swagger UI独立运行
+- [x] 组件可被禁用而不影响主项目
+
+### 测试自动化
+
+#### 单元测试
+```java
+@SpringBootTest
+class OpenApiControllerTest {
+    @Test
+    void shouldGenerateValidOpenApiSpec() {
+        // 验证生成的OpenAPI JSON格式正确
+    }
+    
+    @Test
+    void shouldOnlyIncludeJmxConsoleEndpoints() {
+        // 验证只包含JMX Console的端点
+    }
+}
+```
+
+#### 集成测试
+```java
+@SpringBootTest(classes = Application.class)
+class ComponentIntegrationTest {
+    @Test
+    void shouldStartWithoutConflicts() {
+        // 验证与主项目集成无冲突
+    }
+}
+```
+
+### 回归测试检查清单
+
+- [ ] 组件启动不产生Bean冲突
+- [ ] JMX Console OpenAPI端点返回有效JSON
+- [ ] 生成的文档只包含组件自己的API
+- [ ] Swagger UI能正确加载和显示
+- [ ] 主项目功能不受组件影响
+- [ ] 组件可以被配置禁用
+- [ ] 多实例部署不产生端口冲突
+- [ ] 文档内容与实际API保持同步

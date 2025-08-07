@@ -9,6 +9,7 @@ import com.liangwj.spring.jmxConsole.controllers.HealthController;
 
 /**
  * JMX Console Web配置
+ * 不创建OpenAPI相关的Bean，通过手动实现的OpenApiController提供API文档
  */
 @Configuration
 @ComponentScan(basePackageClasses = HealthController.class)

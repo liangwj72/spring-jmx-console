@@ -1,0 +1,114 @@
+{
+    "openapi": "3.0.1",
+    "info": {
+      "title": "JMX Console API",
+      "description": "JMX Console管理接口 - 独立运行端口",
+      "version": "1.0.0"
+    },
+    "paths": {
+      "/api/runtime/os_info": {
+        "get": {
+          "tags": [
+            "运行状态"
+          ],
+          "summary": "获取操作系统和虚拟机信息",
+          "description": "",
+          "operationId": "osInfo",
+          "responses": {
+            "200": {
+              "description": "获取成功",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/OsInfoResponse"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/api/runtime/history": {
+        "get": {
+          "tags": [
+            "运行状态"
+          ],
+          "summary": "获取操作系统，JVM的线图数据",
+          "description": "",
+          "operationId": "history",
+          "responses": {
+            "200": {
+              "description": "获取成功",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/RuntimeHistoryResponse"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/health": {
+        "get": {
+          "tags": [
+            "健康检查"
+          ],
+          "summary": "健康检查",
+          "description": "检查应用程序是否正常运行",
+          "operationId": "health",
+          "responses": {
+            "200": {
+              "description": "成功"
+            }
+          }
+        }
+      }
+    },
+    "components": {
+      "schemas": {
+        "OsInfoResponse": {
+          "type": "object",
+          "properties": {
+            "os": {
+              "$ref": "#/components/schemas/OsInfo"
+            },
+            "classLoading": {
+              "$ref": "#/components/schemas/ClassLoadingInfo"
+            },
+            "threading": {
+              "$ref": "#/components/schemas/ThreadingInfo"
+            },
+            "vm": {
+              "$ref": "#/components/schemas/VmInfo"
+            }
+          },
+          "description": "服务器硬件和虚拟机信息"
+        },
+        "RuntimeHistoryResponse": {
+          "type": "object",
+          "properties": {
+            "diskInfo": {
+              "$ref": "#/components/schemas/DiskInfo"
+            },
+            "uriStat": {
+              "type": "array",
+              "description": "所有时间范围状态",
+              "items": {
+                "$ref": "#/components/schemas/UrlStatInfoBean"
+              }
+            },
+            "list": {
+              "type": "array",
+              "description": "图表数据",
+              "items": {
+                "$ref": "#/components/schemas/RuntimeInfoBean"
+              }
+            }
+          },
+          "description": "运行状态的响应"
+        }
+      }
+    }
+  }

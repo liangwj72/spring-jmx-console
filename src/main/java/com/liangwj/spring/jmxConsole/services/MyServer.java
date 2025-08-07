@@ -47,7 +47,6 @@ public class MyServer implements InitializingBean, DisposableBean, ApplicationCo
     private void startJmxConsoleServer() {
         try {
             logger.info("==== Starting JMX Console Server on port: {} ====", properties.getPort());
-			logger.info("\tSwagger UI: http://127.0.0.1:{}/swagger-ui/index.html", properties.getPort());
             
             // 创建嵌入式Tomcat服务器
             final TomcatServletWebServerFactory factory = new TomcatServletWebServerFactory();
@@ -73,7 +72,7 @@ public class MyServer implements InitializingBean, DisposableBean, ApplicationCo
             webServer = factory.getWebServer();
             webServer.start();
             
-			logger.info("JMX Console Server started successfully on http://127.0.0.1:{}", properties.getPort());
+			logger.info("\tSwagger UI: http://127.0.0.1:{}/swagger-ui/index.html", properties.getPort());
                 
         } catch (final Exception e) {
             logger.error("Failed to start JMX Console Server", e);

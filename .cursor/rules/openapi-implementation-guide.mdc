@@ -1,0 +1,120 @@
+---
+description: OpenAPI手动实现技术指南
+globs: **/controllers/OpenApiController.java,**/config/*WebConfiguration.java
+---
+
+# OpenAPI手动实现技术指南
+
+## 核心实现策略
+
+### 1. 使用io.swagger.v3包构建OpenAPI对象
+```java
+// 使用官方模型类
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.paths.PathItem;
+import io.swagger.v3.oas.models.Operation;
+import io.swagger.v3.oas.models.responses.ApiResponse;
+import io.swagger.v3.oas.models.media.Schema;
+import io.swagger.v3.oas.models.media.Content;
+
+// 构建完整的OpenAPI对象
+OpenAPI openAPI = new OpenAPI()
+    .info(new Info().title("JMX Console API").version("1.0.0"))
+    .paths(buildPaths())
+    .components(buildComponents());
+```
+
+### 2. 利用Spring MVC的映射信息
+```java
+@Autowired
+private RequestMappingHandlerMapping handlerMapping;
+
+// 获取所有映射信息
+Map<RequestMappingInfo, HandlerMethod> handlerMethods = handlerMapping.getHandlerMethods();
+
+// 过滤只属于当前组件的Controller
+for (Map.Entry<RequestMappingInfo, HandlerMethod> entry : handlerMethods.entrySet()) {
+    HandlerMethod method = entry.getValue();
+    if (method.getBeanType().getPackage().getName().startsWith(CONTROLLER_PACKAGE)) {
+        // 处理这个映射
+    }
+}
+```
+
+### 3. 注解解析和Schema生成
+```java
+// 解析@Operation注解
+Operation opAnnotation = method.getMethod().getAnnotation(Operation.class);
+if (opAnnotation != null) {
+    operation.summary(opAnnotation.summary())
+             .description(opAnnotation.description());
+}
+
+// 解析@ApiResponse注解
+ApiResponses responses = method.getMethod().getAnnotation(ApiResponses.class);
+if (responses != null) {
+    for (ApiResponse response : responses.value()) {
+        // 构建响应对象
+    }
+}
+
+// 生成返回类型的Schema
+Class<?> returnType = method.getMethod().getReturnType();
+Schema<?> schema = generateSchemaFromClass(returnType);
+```
+
+### 4. Schema自动生成
+```java
+// 使用Jackson的ObjectMapper和Swagger的ModelResolver
+private Schema<?> generateSchemaFromClass(Class<?> clazz) {
+    // 利用io.swagger.v3.core.converter.ModelConverters
+    ModelConverters converters = ModelConverters.getInstance();
+    Map<String, Schema> schemas = converters.read(clazz);
+    return schemas.get(clazz.getSimpleName());
+}
+```
+
+### 5. JSON序列化
+```java
+// 使用官方JSON工具
+import io.swagger.v3.core.util.Json;
+
+@GetMapping("/v3/api-docs")
+public String getOpenApiSpec() throws JsonProcessingException {
+    OpenAPI openAPI = buildOpenAPI();
+    return Json.mapper().writeValueAsString(openAPI);
+}
+```
+
+## 技术要点
+
+### 避免冲突的关键
+1. **不注册全局Bean** - 不创建OpenAPI类型的@Bean
+2. **包范围限制** - 只扫描组件自己的Controller包
+3. **独立配置** - 通过Controller方法提供配置，不依赖SpringDoc配置
+
+### 完整功能支持
+1. **路径扫描** - 自动发现Controller中的映射
+2. **注解解析** - 支持@Operation、@ApiResponse、@Schema等
+3. **类型推断** - 自动生成请求/响应的Schema
+4. **参数处理** - 解析@PathVariable、@RequestParam、@RequestBody
+5. **错误处理** - 包含@ControllerAdvice的异常映射
+
+### 性能优化
+1. **懒加载** - 首次访问时构建，后续缓存
+2. **包过滤** - 早期过滤非相关Controller
+3. **增量更新** - 只在开发模式下支持热更新
+
+## 实现检查清单
+
+- [ ] 使用io.swagger.v3.oas.models包构建OpenAPI对象
+- [ ] 通过RequestMappingHandlerMapping扫描映射
+- [ ] 正确解析@Operation、@ApiResponse等注解
+- [ ] 生成完整的Schema信息（包括嵌套对象）
+- [ ] 支持泛型类型和集合类型
+- [ ] 正确处理HTTP方法和路径
+- [ ] 包含完整的响应状态码
+- [ ] 生成标准的OpenAPI 3.0.1 JSON格式
+- [ ] 提供Swagger UI所需的配置端点
+- [ ] 确保与主项目集成时无冲突

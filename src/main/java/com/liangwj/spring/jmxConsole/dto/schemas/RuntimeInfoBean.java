@@ -35,7 +35,63 @@ public class RuntimeInfoBean implements Serializable {
 
 	/** 是否当前秒 */
 	public boolean curTimeSec() {
-		long now = System.currentTimeMillis() / 1000 * 1000;
+		final long now = System.currentTimeMillis() / 1000 * 1000;
 		return now == this.recordTime;
+	}
+
+	public long getRecordTime() {
+		return recordTime;
+	}
+
+	public void setRecordTime(long recordTime) {
+		this.recordTime = recordTime;
+	}
+
+	public long getActionCount() {
+		return actionCount;
+	}
+
+	public void setActionCount(long actionCount) {
+		this.actionCount = actionCount;
+	}
+
+	public double getProcessCpuLoad() {
+		return processCpuLoad;
+	}
+
+	public void setProcessCpuLoad(double processCpuLoad) {
+		this.processCpuLoad = processCpuLoad;
+	}
+
+	public long getSendPacketCount() {
+		return sendPacketCount;
+	}
+
+	public void setSendPacketCount(long sendPacketCount) {
+		this.sendPacketCount = sendPacketCount;
+	}
+
+	public long getSendPacketPayload() {
+		return sendPacketPayload;
+	}
+
+	public void setSendPacketPayload(long sendPacketPayload) {
+		this.sendPacketPayload = sendPacketPayload;
+	}
+
+	public OsMemoryInfoBean getMemory() {
+		return memory;
+	}
+
+	public void setMemory(OsMemoryInfoBean memory) {
+		this.memory = memory;
+	}
+
+	public int getThreadCount() {
+		return threadCount;
+	}
+
+	public void setThreadCount(int threadCount) {
+		this.threadCount = threadCount;
 	}
 }

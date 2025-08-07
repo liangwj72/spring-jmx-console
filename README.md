@@ -24,3 +24,14 @@ spring-jmx-console:
 ## 测试
 
 `demo.Application` 是一个演示用的Web项目，通过其他这个项目就可以测试本组件
+
+
+### 自动化测试启动（默认）
+```bash
+# 编译项目（包含测试代码）
+mvn clean test-compile
+
+# 使用forever参数，应用将持续运行直到手动停止
+mvn exec:java -Dexec.mainClass="demo.Application" -Dexec.classpathScope="test" -Dexec.args="forever"
+
+```

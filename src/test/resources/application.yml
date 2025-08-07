@@ -10,7 +10,7 @@ server:
 
 # Spring JMX Console 配置
 spring-jmx-console:
-    port: 60080
+    port: ${JMX_CONSOLE_PORT:60080}
     context-path: ${JMX_CONSOLE_CONTEXT_PATH:}
 
 # 日志配置

@@ -1,0 +1,82 @@
+---
+alwaysApply: true
+description: OpenAPI组件开发约束和规范
+---
+
+# OpenAPI组件开发约束
+
+## 项目背景
+这是一个Spring Boot组件项目，用于集成到其他主项目中。由于SpringDoc OpenAPI的单例模式限制，组件项目不能依赖SpringDoc的自动配置，需要手动实现OpenAPI端点。
+
+## 核心约束
+
+### 1. 禁止使用SpringDoc自动配置
+- ❌ 不能依赖SpringDoc的自动配置Bean
+- ❌ 不能使用`@EnableOpenApi`等自动配置注解
+- ❌ 不能创建全局OpenAPI Bean（会与主项目冲突）
+
+### 2. 必须手动实现OpenAPI端点
+组件必须提供以下端点：
+- `/v3/api-docs` - OpenAPI JSON规范
+- `/v3/api-docs/swagger-config` - Swagger UI配置
+
+### 3. 实现方式要求
+- ✅ 使用`io.swagger.v3.oas.models`包中的类构建OpenAPI对象
+- ✅ 使用`io.swagger.v3.oas.annotations`注解增强API文档
+- ✅ 利用Spring的`RequestMappingHandlerMapping`扫描Controller
+- ✅ 通过反射和注解解析生成完整的API文档
+- ✅ 使用`io.swagger.v3.core.util.Json`进行JSON序列化
+
+## 实现规范
+
+### OpenApiController设计
+```java
+@RestController
+public class OpenApiController {
+    // 只扫描组件自己的Controller包
+    private static final String CONTROLLER_PACKAGE = HealthController.class.getPackageName();
+    
+    @GetMapping("/v3/api-docs")
+    public String getOpenApiSpec() {
+        // 使用io.swagger.v3.oas.models构建OpenAPI对象
+        // 扫描指定包下的Controller
+        // 解析@Operation、@ApiResponse等注解
+        // 生成完整的Schema信息
+    }
+    
+    @GetMapping("/v3/api-docs/swagger-config") 
+    public Map<String, Object> getSwaggerConfig() {
+        // 返回Swagger UI所需的配置
+    }
+}
+```
+
+### 包扫描范围限制
+- 只扫描`com.liangwj.spring.jmxConsole.controllers`包
+- 排除主项目的Controller
+- 排除OpenApiController自身的映射
+
+### 注解支持要求
+必须支持解析以下注解：
+- `@Operation` - 操作描述
+- `@ApiResponse` - 响应信息  
+- `@Tag` - Controller标签
+- `@Schema` - 数据模型
+- `@Parameter` - 参数信息
+
+### JSON输出要求
+- 生成标准的OpenAPI 3.0.1格式
+- 包含完整的paths、components、schemas
+- 支持复杂类型的Schema生成
+- 与SpringDoc生成的格式保持兼容
+
+## 文件引用
+- 主要实现：[OpenApiController.java](mdc:src/main/java/com/liangwj/spring/jmxConsole/controllers/OpenApiController.java)
+- 配置类：[MyWebConfiguration.java](mdc:src/main/java/com/liangwj/spring/jmxConsole/config/MyWebConfiguration.java)
+- 测试应用：[Application.java](mdc:src/test/java/demo/Application.java)
+
+## 测试验证
+- 组件启动后`/v3/api-docs`应返回完整的OpenAPI JSON
+- Swagger UI能正常加载和显示API文档
+- 与主项目集成时不产生Bean冲突
+- 生成的文档包含完整的Schema和Response信息
