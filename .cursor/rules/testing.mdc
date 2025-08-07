@@ -1,0 +1,67 @@
+---
+alwaysApply: true
+---
+# 测试开发规范
+
+## 测试结构
+- 测试代码位于`src/test/java/demo`目录
+- 测试资源位于`src/test/resources`目录
+- 主测试类：[Application.java](mdc:src/test/java/demo/Application.java)
+
+## 测试组件
+1. **Application** - 主测试应用程序
+   - 使用`@SpringBootApplication`和`@EnableAutoConfiguration`
+   - 演示如何集成JMX Console组件
+   - 通过`@PostConstruct`输出启动信息
+
+2. **DemoController** - 演示控制器
+   - 提供基本的Web接口
+   - 用于测试组件集成
+
+3. **DemoResponse** - 响应对象
+   - 定义API响应结构
+
+## 测试配置
+- 使用独立的`application.yml`配置文件
+- 支持JMX Console组件的配置测试
+- 包含日志和横幅配置
+
+## 测试最佳实践
+- 使用Spring Boot Test框架
+- 测试自动配置功能
+- 验证组件集成效果
+- 确保独立端口监听正常工作
+- 自动化测试时，无需任何参数，应用将自动退出
+- 正常调试时，使用`forever`参数保持应用运行
+
+## 运行命令示例
+
+### 自动化测试启动（默认）
+```bash
+# 编译项目（包含测试代码）
+mvn clean test-compile
+
+# 运行测试应用（默认10秒后自动退出）
+mvn exec:java -Dexec.mainClass="demo.Application" -Dexec.classpathScope="test"
+
+# 或者使用Spring Boot插件
+mvn spring-boot:run -Dspring-boot.run.main-class="demo.Application"
+```
+
+### 正常启动（持续运行）
+```bash
+# 使用forever参数，应用将持续运行直到手动停止
+mvn exec:java -Dexec.mainClass="demo.Application" -Dexec.classpathScope="test" -Dexec.args="forever"
+
+# 或者使用Spring Boot插件
+mvn spring-boot:run -Dspring-boot.run.main-class="demo.Application" -Dspring-boot.run.arguments="forever"
+```
+
+### 访问测试
+```bash
+# 测试Demo Web应用（默认端口8080）
+curl http://localhost:8080
+
+# 测试JMX Console（默认端口60080）
+curl http://localhost:60080
+```

@@ -1,0 +1,35 @@
+---
+alwaysApply: true
+description: Spring JMX Console项目结构和开发指南
+---
+
+# Spring JMX Console 项目规则
+
+## 项目概述
+这是一个Spring Boot组件项目，为其他Web项目提供JMX控制台的Web界面。项目不能独立使用，需要集成到其他Spring Boot项目中。
+
+## 项目结构
+- 主包名：`com.liangwj.spring.jmxConsole`
+- 配置类：[JmxConsoleProperties.java](mdc:src/main/java/com/liangwj/spring/jmxConsole/JmxConsoleProperties.java)
+- 测试演示：[Application.java](mdc:src/test/java/demo/Application.java)
+
+## 核心组件
+1. **JmxConsoleProperties** - 配置属性类，对应`spring-jmx-console`配置前缀
+   - `port`: 监听端口（默认60080）
+   - `contextPath`: 上下文路径（默认空）
+
+## 集成方式
+- 通过`@EnableAutoConfiguration`自动配置启动
+- 监听独立端口，与主项目不冲突
+- 配置示例：
+```yaml
+spring-jmx-console:
+    port: 60080
+    context-path: ${JMX_CONSOLE_CONTEXT_PATH:}
+```
+
+## 开发规范
+- 使用Java 17
+- 遵循Spring Boot自动配置模式
+- 测试用例在`src/test/java/demo`目录下
+- 组件通过`META-INF/spring/imports`定义启动类

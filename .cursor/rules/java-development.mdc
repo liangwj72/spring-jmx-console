@@ -1,0 +1,31 @@
+---
+globs: *.java
+description: Java开发规范和最佳实践
+---
+
+# Java开发规范
+
+## 代码风格
+- 使用Java 17语法特性
+- 遵循Spring Boot开发规范
+- 类名使用PascalCase
+- 方法名和变量名使用camelCase
+- 常量使用UPPER_SNAKE_CASE
+
+## Spring Boot开发
+- 使用`@ConfigurationProperties`进行配置绑定
+- 配置类使用`@ConfigurationProperties("spring-jmx-console")`注解
+- 自动配置类通过`META-INF/spring/imports`注册
+- 使用`@EnableAutoConfiguration`启用自动配置
+
+## 包结构
+- 主包：`com.liangwj.spring.jmxConsole`
+- 测试包：`demo`
+- 配置类放在主包下
+- 测试类放在`src/test/java/demo`目录
+
+## 依赖管理
+- 使用Maven管理依赖
+- 核心依赖在`pom.xml`中定义
+- 测试依赖使用`test`作用域
+- 遵循Spring Boot依赖管理规范

@@ -1,0 +1,34 @@
+---
+globs: *.yml,*.yaml,*.properties
+description: 配置文件规范和最佳实践
+---
+
+# 配置规范
+
+## 配置文件结构
+- 主配置文件：`application.yml`
+- 测试配置：`src/test/resources/application.yml`
+- 日志配置：`logback.xml`
+- 横幅配置：`banner.txt`
+
+## Spring JMX Console配置
+```yaml
+spring-jmx-console:
+    port: 60080                    # 监听端口（默认60080）
+    context-path: ""               # 上下文路径（默认空）
+```
+
+## 环境变量支持
+- 使用`${ENV_VAR:default_value}`格式
+- 支持环境变量覆盖配置
+- 示例：`${JMX_CONSOLE_CONTEXT_PATH:}`
+
+## 配置类映射
+- 配置前缀：`spring-jmx-console`
+- 对应类：[JmxConsoleProperties.java](mdc:src/main/java/com/liangwj/spring/jmxConsole/JmxConsoleProperties.java)
+- 使用`@ConfigurationProperties`注解绑定
+
+## 测试配置
+- 测试环境使用独立的配置文件
+- 配置在`src/test/resources`目录下
+- 支持不同环境的配置切换

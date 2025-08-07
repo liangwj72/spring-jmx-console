@@ -1,0 +1,23 @@
+spring:
+   application:
+      name: demo-web-app
+
+# 服务器配置
+server:
+   port: ${HTTP_PORT:8080}
+   servlet:
+      context-path: ${CONTEXT_PATH:}
+
+# Spring JMX Console 配置
+spring-jmx-console:
+    port: 60080
+    context-path: ${JMX_CONSOLE_CONTEXT_PATH:}
+
+# 日志配置
+logging:
+   level:
+      root: error
+      demo: ${LOG_LEVEL:debug}
+      com.linagwj: ${LOG_LEVEL:debug}
+   pattern:
+      console: '[%thread] %-5level %d{HH:mm:ss} %class{16}:%line - %msg %n'
