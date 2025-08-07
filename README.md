@@ -17,7 +17,6 @@ jconsole的web版
 ```yaml
 spring-jmx-console:
     port: 60080 # 监听的端口
-    context-path: ${JMX_CONSOLE_CONTEXT_PATH:}  # 默认上下文路径
 
 ```
 对应的class是: `com.liangwj.spring.jmxConsole.JmxConsoleProperties`
