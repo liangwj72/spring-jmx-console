@@ -8,7 +8,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 /**
  * URL时间范围统计信息
  *
- * @author rock
  *
  */
 @Schema(description = "URL时间范围统计信息")

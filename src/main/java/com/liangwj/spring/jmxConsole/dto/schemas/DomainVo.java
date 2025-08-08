@@ -9,7 +9,7 @@ import java.util.List;
  * 对Mbean进行分类显示用
  * </pre>
  * 
- * @author<a href="https://github.com/liangwj72">Alex (梁韦江)</a> 2015年9月11日
+ 
  */
 public class DomainVo implements Comparable<DomainVo> {
 	private final String name;

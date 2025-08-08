@@ -36,7 +36,6 @@ import com.liangwj.spring.jmxConsole.utils.MethodUtil.MethodInfoOfSetter;
  * 为mbean提供的工具集合
  * </pre>
  * 
- * @author rock 2016年10月12日
  */
 public class MBeanUtils {
 
@@ -45,7 +44,6 @@ public class MBeanUtils {
 	 * 在执行  objectToMap 时，是否忽略该方法
 	 * </pre>
 	 * 
-	 * @author rock 2016年10月12日
 	 */
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target(ElementType.METHOD)

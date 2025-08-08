@@ -14,4 +14,8 @@ public class BaseApiException extends Exception {
 	public BaseApiException() {
 	}
 
+	public BaseApiException(Throwable ex) {
+		super(ex);
+	}
+
 }

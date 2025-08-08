@@ -9,7 +9,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  * 主项目拦截器配置
  * 这个配置会在主项目中生效，用于拦截主项目的API调用
  * 
- * @author rock
  */
 @Configuration
 public class MainProjectInterceptorConfiguration implements WebMvcConfigurer {

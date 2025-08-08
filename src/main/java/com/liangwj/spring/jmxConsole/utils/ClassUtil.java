@@ -26,7 +26,6 @@ import org.springframework.util.StringUtils;
  * 分析class结构的工具，主要和泛型相关
  * </pre>
  * 
- * @author rock 2015年5月15日
  */
 public class ClassUtil {
 

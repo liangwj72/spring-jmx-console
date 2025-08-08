@@ -54,8 +54,7 @@ public class StatService {
 	/**
 	 * 记录每个时间范围的URL访问数据
 	 *
-	 * @author rock
-	 *
+		 *
 	 */
 	public class StatInfo {
 		private final int id;

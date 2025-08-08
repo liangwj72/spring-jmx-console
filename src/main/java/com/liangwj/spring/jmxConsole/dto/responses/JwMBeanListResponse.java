@@ -10,7 +10,6 @@ import com.liangwj.spring.jmxConsole.dto.schemas.DomainVo;
  * 返回 所有的mbean
  * </pre>
  * 
- * @author rock 2017年4月25日
  */
 public class JwMBeanListResponse  {
 

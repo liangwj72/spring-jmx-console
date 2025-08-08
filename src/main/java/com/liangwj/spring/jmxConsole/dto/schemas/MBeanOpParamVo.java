@@ -9,7 +9,7 @@ import com.liangwj.spring.jmxConsole.utils.OpenTypeUtil;
  * 对MBeanParameterInfo的包装
  * </pre>
  * 
- * @author<a href="https://github.com/liangwj72">Alex (梁韦江)</a> 2015年10月15日
+
  */
 public class MBeanOpParamVo {
 

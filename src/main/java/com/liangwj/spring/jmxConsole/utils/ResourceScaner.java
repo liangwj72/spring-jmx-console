@@ -21,7 +21,6 @@ import org.springframework.util.Assert;
  * 资源扫描器，从classpath中扫描所有的文件
  * </pre>
  * 
- * @author rock 2016年9月28日
  */
 public class ResourceScaner {
 

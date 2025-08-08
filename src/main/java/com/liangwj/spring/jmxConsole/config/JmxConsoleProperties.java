@@ -8,6 +8,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties("spring-jmx-console")
 public class JmxConsoleProperties {
 
+
 	private int port = 60080; // 默认端口
 
 	public int getPort() {

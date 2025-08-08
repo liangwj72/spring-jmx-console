@@ -16,7 +16,6 @@ import org.springframework.util.StringUtils;
  * 在Class搜索Method的工具
  * </pre>
  * 
- * @author rock 2015年5月15日
  */
 public class MethodUtil {
 

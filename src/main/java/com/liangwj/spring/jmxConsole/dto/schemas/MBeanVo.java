@@ -16,7 +16,7 @@ import javax.management.ObjectName;
  * 对MBeanInfo的包装
  * </pre>
  * 
- * @author<a href="https://github.com/liangwj72">Alex (梁韦江)</a> 2015年9月11日
+ 
  */
 public class MBeanVo implements Comparable<MBeanVo> {
 	private final MBeanInfo info;

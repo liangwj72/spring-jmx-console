@@ -11,7 +11,7 @@ import javax.management.MBeanParameterInfo;
  * 包装MBeanOperationInfo
  * </pre>
  * 
- * @author<a href="https://github.com/liangwj72">Alex (梁韦江)</a> 2015年10月15日
+
  */
 public class MBeanOpVo implements Comparable<MBeanOpVo> {
 	private final MBeanOperationInfoVo info;

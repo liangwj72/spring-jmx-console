@@ -10,8 +10,6 @@ import java.util.LinkedList;
  * LinkedBlockingQueue（阻塞队列）
  * </pre>
  * 
- * @author 黄云
- * 2015-9-25
  */
 public class QueueLinkedList<E> extends LinkedList<E>{
 
