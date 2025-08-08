@@ -1,44 +1,29 @@
 package com.liangwj.spring.jmxConsole;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 
 import com.liangwj.spring.jmxConsole.config.JmxConsoleProperties;
-import com.liangwj.spring.jmxConsole.config.MainProjectInterceptorConfiguration;
-import com.liangwj.spring.jmxConsole.interceptors.MainProjectApiStatInterceptor;
-import com.liangwj.spring.jmxConsole.services.StatService;
+import com.liangwj.spring.jmxConsole.config.MyControllerConfiguration;
+import com.liangwj.spring.jmxConsole.mainProject.MainProjectInterceptorConfiguration;
+import com.liangwj.spring.jmxConsole.services.JmxConsoleServer;
 
 /**
  * JMX Console 自动配置类
+ * 
+ * @see JmxConsoleServer JmxConsoleServer会去通过 MyControllerConfiguration
+ * @see MyControllerConfiguration 配置mvc和扫描Controller
  */
 @Configuration
 @EnableConfigurationProperties(JmxConsoleProperties.class)
 @ConditionalOnProperty(prefix = "spring-jmx-console", name = "port")
-@Import(MainProjectInterceptorConfiguration.class)
+@ComponentScan(basePackageClasses = {
+		// 扫描的包路径, 不要扫描到Controller的包，因为OpenAPI的Controller会冲突
+		JmxConsoleServer.class, // Service类,
+		MainProjectInterceptorConfiguration.class, // 主项目拦截器配置
+})
 public class JmxConsoleAutoConfiguration {
 
-	private static final Logger logger = LoggerFactory.getLogger(JmxConsoleAutoConfiguration.class);
-
-	@Bean
-	JmxConsoleServer myServer(JmxConsoleProperties properties) {
-		logger.info("Creating JMX Console Server with port: {}", properties.getPort());
-		return new JmxConsoleServer(properties);
-	}
-
-	@Bean
-	StatService statService() {
-		logger.info("Creating StatService for main project API monitoring");
-		return new StatService();
-	}
-
-	@Bean
-	MainProjectApiStatInterceptor mainProjectApiStatInterceptor() {
-		logger.info("Creating MainProjectApiStatInterceptor for main project API monitoring");
-		return new MainProjectApiStatInterceptor();
-	}
 }

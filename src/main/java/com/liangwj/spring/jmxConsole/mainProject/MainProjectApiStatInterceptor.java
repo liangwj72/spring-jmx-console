@@ -1,4 +1,4 @@
-package com.liangwj.spring.jmxConsole.interceptors;
+package com.liangwj.spring.jmxConsole.mainProject;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

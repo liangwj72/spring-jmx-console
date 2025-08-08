@@ -1,11 +1,9 @@
-package com.liangwj.spring.jmxConsole.config;
+package com.liangwj.spring.jmxConsole.mainProject;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
-import com.liangwj.spring.jmxConsole.interceptors.MainProjectApiStatInterceptor;
 
 /**
  * 主项目拦截器配置

@@ -1,4 +1,4 @@
-package com.liangwj.spring.jmxConsole;
+package com.liangwj.spring.jmxConsole.services;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
