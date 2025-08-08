@@ -216,7 +216,7 @@ public class MBeanUtils {
 			// 遍历所有的属性
 			for (final MBeanAttributeInfo attr : info.getAttributes()) {
 				// 输出到控制台，输出的容易用于粘贴到代码中
-				System.out.println("@AComment(\"\")");
+				System.out.println("@Schema(description = \"\")");
 				System.out.println(String.format("private %s %s;",
 						attr.getType(),
 						StringUtils.uncapitalize(attr.getName())));
