@@ -1,8 +1,9 @@
 package com.liangwj.spring.jmxConsole.dto.responses;
 
-import org.springframework.boot.info.OsInfo;
+
 
 import com.liangwj.spring.jmxConsole.dto.schemas.ClassLoadingInfo;
+import com.liangwj.spring.jmxConsole.dto.schemas.OsInfoBean;
 import com.liangwj.spring.jmxConsole.dto.schemas.ThreadingInfo;
 import com.liangwj.spring.jmxConsole.dto.schemas.VmInfo;
 
@@ -15,7 +16,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public class OsInfoResponse {
 
 	@Schema(description = "操作系统信息")
-	private OsInfo os;
+	private OsInfoBean os;
 
 	@Schema(description = "类加载信息")
 	private ClassLoadingInfo classLoading;
@@ -26,11 +27,11 @@ public class OsInfoResponse {
 	@Schema(description = "虚拟机信息")
 	private VmInfo vm;
 
-	public OsInfo getOs() {
+	public OsInfoBean getOs() {
 		return os;
 	}
 
-	public void setOs(OsInfo os) {
+	public void setOs(OsInfoBean os) {
 		this.os = os;
 	}
 

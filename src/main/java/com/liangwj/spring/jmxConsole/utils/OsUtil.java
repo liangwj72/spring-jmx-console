@@ -2,7 +2,7 @@ package com.liangwj.spring.jmxConsole.utils;
 
 import java.io.File;
 
-import com.liangwj.spring.jmxConsole.dto.schemas.DiskInfo;
+import com.liangwj.spring.jmxConsole.dto.schemas.DiskInfoBean;
 import com.liangwj.spring.jmxConsole.dto.schemas.OsMemoryInfoBean;
 
 /**
@@ -14,54 +14,31 @@ public class OsUtil {
 	 * 获得内存使用情况
 	 */
 	public static OsMemoryInfoBean getMemoryInfo() {
-		OsMemoryInfoBean bean = new OsMemoryInfoBean();
-		bean.setFreeMemory(getFreeMemory());
-		bean.setMaxMemory(getMaxMemory());
-		bean.setTotalMemory(getTotalMemory());
-		bean.setUsedMemory(getUsedMemory());
+
+		final long totalMemory = Runtime.getRuntime().totalMemory(); // 已经分配的内存总数
+		final long freeMemory = Runtime.getRuntime().freeMemory(); // 可分配的内存总数
+		final long maxMemory = Runtime.getRuntime().maxMemory(); // 可分配的最大内存数
+
+		final OsMemoryInfoBean bean = new OsMemoryInfoBean();
+		bean.setFreeMemory(freeMemory);
+		bean.setMaxMemory(maxMemory);
+		bean.setTotalMemory(totalMemory);
+		bean.setUsedMemory(totalMemory - freeMemory);
 		return bean;
 	}
 
 	/**
 	 * 获取硬盘信息
 	 */
-	public static DiskInfo getDiskInfo() {
-		File file = new File(".");
+	public static DiskInfoBean getDiskInfo() {
+		final File file = new File(".");
 
-		DiskInfo bean = new DiskInfo();
+		final DiskInfoBean bean = new DiskInfoBean();
 		bean.setFreeSpace(file.getFreeSpace());
 		bean.setTotalSpace(file.getTotalSpace());
 		bean.setUsableSpace(file.getUsableSpace());
 
 		return bean;
-	}
-
-	/**
-	 * 获取已经分配的内存总数
-	 */
-	public static long getTotalMemory() {
-		return Runtime.getRuntime().totalMemory();
-	}
-
-	/**
-	 * 获取可分配的内存总数
-	 */
-	public static long getFreeMemory() {
-		return Runtime.getRuntime().freeMemory();
-	}
-
-	/**
-	 * 获取可分配的最大内存数
-	 */
-	public static long getMaxMemory() {
-		return Runtime.getRuntime().maxMemory();
-	}
-
-	/**
-	 * 获取已经使用的内存数
-	 */
-	public static long getUsedMemory() {
-		return getTotalMemory() - getFreeMemory();
 	}
 
 }

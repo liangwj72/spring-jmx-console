@@ -2,19 +2,15 @@ package com.liangwj.spring.jmxConsole.dto.schemas;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-/**
- * 记录每个url的访问时间数据
- *
- * @author rock
- *
- */
-@Schema(description = "记录每个url的访问时间数据")
+@Schema(description = "记录每个api 的访问时间数据")
 public class UrlBean {
-	@Schema(description = "访问时间")
+	@Schema(description = "api 访问时间")
 	private final long accessTime;
-	@Schema(description = "消耗的时间：毫秒")
+
+	@Schema(description = "api 消耗的时间：毫秒")
 	private final long cost;
-	@Schema(description = "url")
+
+	@Schema(description = "api 的 url")
 	private final String url;
 
 	public UrlBean(String url, long cost) {

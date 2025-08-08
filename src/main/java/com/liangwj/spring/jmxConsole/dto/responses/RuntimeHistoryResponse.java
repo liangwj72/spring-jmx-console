@@ -2,7 +2,7 @@ package com.liangwj.spring.jmxConsole.dto.responses;
 
 import java.util.List;
 
-import com.liangwj.spring.jmxConsole.dto.schemas.DiskInfo;
+import com.liangwj.spring.jmxConsole.dto.schemas.DiskInfoBean;
 import com.liangwj.spring.jmxConsole.dto.schemas.RuntimeInfoBean;
 import com.liangwj.spring.jmxConsole.dto.schemas.UrlStatInfoBean;
 
@@ -13,19 +13,19 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public class RuntimeHistoryResponse {
 
 	@Schema(description = "磁盘信息")
-	private DiskInfo diskInfo;
+	private DiskInfoBean diskInfo;
 
-	@Schema(description = "所有时间范围状态")
-	private List<UrlStatInfoBean> uriStat;
+	@Schema(description = "api的url统计")
+	private List<UrlStatInfoBean> uriStat = new java.util.ArrayList<>();
 
-	@Schema(description = "图表数据")
-	private List<RuntimeInfoBean> list;
+	@Schema(description = "运行状态的图表数据")
+	private List<RuntimeInfoBean> runtimes = new java.util.ArrayList<>();
 
-	public DiskInfo getDiskInfo() {
+	public DiskInfoBean getDiskInfo() {
 		return diskInfo;
 	}
 
-	public void setDiskInfo(DiskInfo diskInfo) {
+	public void setDiskInfo(DiskInfoBean diskInfo) {
 		this.diskInfo = diskInfo;
 	}
 
@@ -37,12 +37,12 @@ public class RuntimeHistoryResponse {
 		this.uriStat = uriStat;
 	}
 
-	public List<RuntimeInfoBean> getList() {
-		return list;
+	public List<RuntimeInfoBean> getRuntimes() {
+		return runtimes;
 	}
 
-	public void setList(List<RuntimeInfoBean> list) {
-		this.list = list;
+	public void setRuntimes(List<RuntimeInfoBean> runtimes) {
+		this.runtimes = runtimes;
 	}
 
 }

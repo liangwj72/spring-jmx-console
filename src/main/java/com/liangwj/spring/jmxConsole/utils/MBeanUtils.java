@@ -21,11 +21,11 @@ import javax.management.MBeanInfo;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
 
-import org.springframework.boot.info.OsInfo;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 import com.liangwj.spring.jmxConsole.dto.schemas.ClassLoadingInfo;
+import com.liangwj.spring.jmxConsole.dto.schemas.OsInfoBean;
 import com.liangwj.spring.jmxConsole.dto.schemas.ThreadingInfo;
 import com.liangwj.spring.jmxConsole.dto.schemas.VmFullInfo;
 import com.liangwj.spring.jmxConsole.dto.schemas.VmInfo;
@@ -85,8 +85,8 @@ public class MBeanUtils {
 		return bean;
 	}
 
-	public static OsInfo getOsInfo() {
-		final OsInfo bean = new OsInfo();
+	public static OsInfoBean getOsInfo() {
+		final OsInfoBean bean = new OsInfoBean();
 		updateMBeanAttrInfoToBean("java.lang:type=OperatingSystem", bean);
 		return bean;
 	}

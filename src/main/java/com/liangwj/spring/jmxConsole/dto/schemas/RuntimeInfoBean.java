@@ -15,17 +15,11 @@ public class RuntimeInfoBean implements Serializable {
 	@Schema(description = "记录时间点")
 	private long recordTime;
 
-	@Schema(description = "http请求次数")
+	@Schema(description = "api执行次数")
 	private long actionCount;
 
 	@Schema(description = "jvm的负载")
 	private double processCpuLoad;
-
-	@Schema(description = "发包次数")
-	private long sendPacketCount;
-
-	@Schema(description = "发包带宽")
-	private long sendPacketPayload;
 
 	@Schema(description = "内存使用信息")
 	private OsMemoryInfoBean memory;
@@ -33,11 +27,6 @@ public class RuntimeInfoBean implements Serializable {
 	@Schema(description = "线程数量")
 	private int threadCount;
 
-	/** 是否当前秒 */
-	public boolean curTimeSec() {
-		final long now = System.currentTimeMillis() / 1000 * 1000;
-		return now == this.recordTime;
-	}
 
 	public long getRecordTime() {
 		return recordTime;
@@ -61,22 +50,6 @@ public class RuntimeInfoBean implements Serializable {
 
 	public void setProcessCpuLoad(double processCpuLoad) {
 		this.processCpuLoad = processCpuLoad;
-	}
-
-	public long getSendPacketCount() {
-		return sendPacketCount;
-	}
-
-	public void setSendPacketCount(long sendPacketCount) {
-		this.sendPacketCount = sendPacketCount;
-	}
-
-	public long getSendPacketPayload() {
-		return sendPacketPayload;
-	}
-
-	public void setSendPacketPayload(long sendPacketPayload) {
-		this.sendPacketPayload = sendPacketPayload;
 	}
 
 	public OsMemoryInfoBean getMemory() {

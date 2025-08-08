@@ -1,4 +1,4 @@
-package com.liangwj.spring.jmxConsole.services;
+package com.liangwj.spring.jmxConsole;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,16 +21,16 @@ import jakarta.servlet.ServletRegistration;
  * JMX Console 独立服务器
  */
 @Service
-public class MyServer implements InitializingBean, DisposableBean, ApplicationContextAware {
+public class JmxConsoleServer implements InitializingBean, DisposableBean, ApplicationContextAware {
 
-    private static final Logger logger = LoggerFactory.getLogger(MyServer.class);
+    private static final Logger logger = LoggerFactory.getLogger(JmxConsoleServer.class);
     
     private final JmxConsoleProperties properties;
     private AnnotationConfigWebApplicationContext webContext;
     private ApplicationContext parentContext;
     private WebServer webServer;
 
-    public MyServer(JmxConsoleProperties properties) {
+    public JmxConsoleServer(JmxConsoleProperties properties) {
         this.properties = properties;
     }
 

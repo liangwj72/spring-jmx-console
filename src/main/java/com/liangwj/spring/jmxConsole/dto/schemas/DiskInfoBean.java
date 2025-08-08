@@ -6,7 +6,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
  * 磁盘信息
  */
 @Schema(description = "磁盘信息")
-public class DiskInfo {
+public class DiskInfoBean {
 
 	@Schema(description = "空闲空间")
 	private long freeSpace;
