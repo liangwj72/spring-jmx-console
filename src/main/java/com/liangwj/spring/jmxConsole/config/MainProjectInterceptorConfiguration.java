@@ -1,7 +1,6 @@
 package com.liangwj.spring.jmxConsole.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -15,7 +14,6 @@ import com.liangwj.spring.jmxConsole.interceptors.MainProjectApiStatInterceptor;
  * @author rock
  */
 @Configuration
-@ConditionalOnWebApplication
 public class MainProjectInterceptorConfiguration implements WebMvcConfigurer {
 
 	@Autowired
@@ -26,13 +24,6 @@ public class MainProjectInterceptorConfiguration implements WebMvcConfigurer {
 		// 注册API统计拦截器，只拦截主项目的API
 		registry.addInterceptor(mainProjectApiStatInterceptor)
 				.addPathPatterns("/**") // 拦截所有路径
-				.excludePathPatterns(
-					"/actuator/**",      // 排除Actuator端点
-					"/swagger-**",       // 排除Swagger相关
-					"/v3/api-docs/**",   // 排除OpenAPI文档
-					"/webjars/**",       // 排除静态资源
-					"/favicon.ico",      // 排除图标
-					"/error"             // 排除错误页面
-				);
+		;
 	}
 }

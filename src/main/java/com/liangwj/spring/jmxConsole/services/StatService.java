@@ -70,23 +70,22 @@ public class StatService {
 			this.id = id;
 			this.timeRangeMin = timeRangeMin;
 			this.timeRangeMax = timeRangeMax;
+
+			log.debug("初始化时间范围统计数据，id: {}, timeRangeMin: {}, timeRangeMax: {}", id, timeRangeMin, timeRangeMax);
 		}
 
 		/** 生成给api接口用的数据 */
-		public UrlStatInfoBean toInfoBean(boolean includeUrl) {
+		public UrlStatInfoBean toInfoBean() {
 			final UrlStatInfoBean bean = new UrlStatInfoBean(this.id, this.timeRangeMin, this.timeRangeMax,
 					this.counter.get());
 
-			if (includeUrl) {
-				// 如果要包含url详情
-				this.lock.readLock().lock();
-				try {
-					bean.getUrlHistory().addAll(this.urlLog);
+			this.lock.readLock().lock();
+			try {
+				bean.getUrlHistory().addAll(this.urlLog);
 
-					Collections.reverse(bean.getUrlHistory()); // 反序，最新记录放前面
-				} finally {
-					this.lock.readLock().unlock();
-				}
+				Collections.reverse(bean.getUrlHistory()); // 反序，最新记录放前面
+			} finally {
+				this.lock.readLock().unlock();
 			}
 
 			return bean;
@@ -118,6 +117,18 @@ public class StatService {
 			} finally {
 				this.lock.writeLock().unlock();
 			}
+			log.debug("重置统计数据，id: {}, timeRangeMin: {}, timeRangeMax: {}", this.id, this.timeRangeMin,
+					this.timeRangeMax);
+		}
+
+		@Override
+		public String toString() {
+			final StringBuffer sb = new StringBuffer();
+			sb.append("StatInfo{");
+			sb.append("id=").append(id).append(", ");
+			sb.append("counter=").append(counter.get()).append(", ");
+			sb.append("urlLog=").append(urlLog.size()).append("}");
+			return sb.toString();
 		}
 
 	}
@@ -171,9 +182,9 @@ public class StatService {
 	/** 返回所有的时间范围统计数据 */
 	public List<UrlStatInfoBean> getAllUrlStat() {
 		final List<UrlStatInfoBean> list = new LinkedList<>();
-		for (final StatInfo info : stats) {
+		for (final StatInfo info : this.stats) {
 			// 列表时，不给url详情
-			list.add(info.toInfoBean(false));
+			list.add(info.toInfoBean());
 		}
 		return list;
 	}
@@ -202,7 +213,7 @@ public class StatService {
 
 		stat.add(url, costTime); // 增加url耗时记录
 
-		log.debug("增加统计 url:{}, 时间:{}ms, index:{} ", url, costTime, index);
+		log.debug("增加统计 {}, 时间:{}ms, index:{} ", url, costTime, stat);
 
 	}
 

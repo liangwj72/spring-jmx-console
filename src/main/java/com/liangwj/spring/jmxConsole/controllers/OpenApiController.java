@@ -62,7 +62,7 @@ public class OpenApiController {
 
 	@GetMapping(value = OPENAPI_PATH, produces = MediaType.APPLICATION_JSON_VALUE)
 	public String getOpenApiSpec() throws JsonProcessingException {
-		OpenAPI openAPI = getCachedOpenAPI();
+		final OpenAPI openAPI = getCachedOpenAPI();
 		return Json.mapper().writeValueAsString(openAPI);
 	}
 
@@ -104,7 +104,7 @@ public class OpenApiController {
 		// 先预处理所有Schema，确保嵌套对象都被正确生成
 		preGenerateAllSchemas();
 
-		OpenAPI openAPI = new OpenAPI()
+		final OpenAPI openAPI = new OpenAPI()
 			.info(new Info()
 				.title("JMX Console API")
 				.description("JMX Console管理接口 - 独立运行端口")
@@ -112,7 +112,7 @@ public class OpenApiController {
 			.paths(buildPaths())
 			.components(buildComponents());
 
-		Map<String, Schema<?>> schemas = getCachedSchemas();
+		final Map<String, Schema<?>> schemas = getCachedSchemas();
 		logger.debug("OpenAPI文档构建完成，包含 {} 个路径，{} 个Schema", 
 			openAPI.getPaths() != null ? openAPI.getPaths().size() : 0,
 			schemas.size());
@@ -130,14 +130,14 @@ public class OpenApiController {
 	private void preGenerateAllSchemas() {
 		logger.debug("开始预生成所有Schema...");
 		
-		RequestMappingHandlerMapping handlerMapping = applicationContext.getBean(RequestMappingHandlerMapping.class);
-		Map<RequestMappingInfo, HandlerMethod> handlerMethods = handlerMapping.getHandlerMethods();
+		final RequestMappingHandlerMapping handlerMapping = applicationContext.getBean(RequestMappingHandlerMapping.class);
+		final Map<RequestMappingInfo, HandlerMethod> handlerMethods = handlerMapping.getHandlerMethods();
 
-		for (Map.Entry<RequestMappingInfo, HandlerMethod> entry : handlerMethods.entrySet()) {
-			HandlerMethod handlerMethod = entry.getValue();
+		for (final Map.Entry<RequestMappingInfo, HandlerMethod> entry : handlerMethods.entrySet()) {
+			final HandlerMethod handlerMethod = entry.getValue();
 
 			// 只处理JMX Console包下的Controller
-			String controllerPackage = handlerMethod.getBeanType().getPackage().getName();
+			final String controllerPackage = handlerMethod.getBeanType().getPackage().getName();
 			if (!controllerPackage.startsWith(CONTROLLER_PACKAGE)) {
 				continue;
 			}
@@ -148,7 +148,7 @@ public class OpenApiController {
 			}
 
 			// 预生成返回类型的Schema
-			Class<?> returnType = getActualReturnType(handlerMethod.getMethod());
+			final Class<?> returnType = getActualReturnType(handlerMethod.getMethod());
 			if (returnType != null && returnType != Void.class && returnType != void.class) {
 				generateSchemaFromClass(returnType);
 				logger.debug("为方法 {}#{} 预生成返回类型Schema: {}", 
@@ -158,7 +158,7 @@ public class OpenApiController {
 			}
 		}
 		
-		Map<String, Schema<?>> schemas = getCachedSchemas();
+		final Map<String, Schema<?>> schemas = getCachedSchemas();
 		logger.debug("预生成完成，总共生成了 {} 个Schema: {}", schemas.size(), schemas.keySet());
 	}
 
@@ -166,16 +166,16 @@ public class OpenApiController {
 	 * 构建路径信息
 	 */
 	private Paths buildPaths() {
-		Paths paths = new Paths();
-		RequestMappingHandlerMapping handlerMapping = applicationContext.getBean(RequestMappingHandlerMapping.class);
-		Map<RequestMappingInfo, HandlerMethod> handlerMethods = handlerMapping.getHandlerMethods();
+		final Paths paths = new Paths();
+		final RequestMappingHandlerMapping handlerMapping = applicationContext.getBean(RequestMappingHandlerMapping.class);
+		final Map<RequestMappingInfo, HandlerMethod> handlerMethods = handlerMapping.getHandlerMethods();
 
-		for (Map.Entry<RequestMappingInfo, HandlerMethod> entry : handlerMethods.entrySet()) {
-			RequestMappingInfo mappingInfo = entry.getKey();
-			HandlerMethod handlerMethod = entry.getValue();
+		for (final Map.Entry<RequestMappingInfo, HandlerMethod> entry : handlerMethods.entrySet()) {
+			final RequestMappingInfo mappingInfo = entry.getKey();
+			final HandlerMethod handlerMethod = entry.getValue();
 
 			// 只处理JMX Console包下的Controller
-			String controllerPackage = handlerMethod.getBeanType().getPackage().getName();
+			final String controllerPackage = handlerMethod.getBeanType().getPackage().getName();
 			if (!controllerPackage.startsWith(CONTROLLER_PACKAGE)) {
 				continue;
 			}
@@ -188,7 +188,7 @@ public class OpenApiController {
 			// 处理路径模式
 			if (mappingInfo.getPathPatternsCondition() != null) {
 				mappingInfo.getPathPatternsCondition().getPatterns().forEach(pattern -> {
-					String path = pattern.getPatternString();
+					final String path = pattern.getPatternString();
 					PathItem pathItem = paths.get(path);
 					if (pathItem == null) {
 						pathItem = new PathItem();
@@ -196,15 +196,15 @@ public class OpenApiController {
 					}
 
 					// 处理HTTP方法
-					Set<org.springframework.web.bind.annotation.RequestMethod> methods = 
+					final Set<org.springframework.web.bind.annotation.RequestMethod> methods = 
 						mappingInfo.getMethodsCondition().getMethods();
 					
 					if (methods.isEmpty()) {
 						// 如果没有指定方法，默认为GET
 						pathItem.setGet(buildOperation(handlerMethod));
 					} else {
-						for (org.springframework.web.bind.annotation.RequestMethod method : methods) {
-							io.swagger.v3.oas.models.Operation operation = buildOperation(handlerMethod);
+						for (final org.springframework.web.bind.annotation.RequestMethod method : methods) {
+							final io.swagger.v3.oas.models.Operation operation = buildOperation(handlerMethod);
 							switch (method) {
 								case GET:
 									pathItem.setGet(operation);
@@ -244,11 +244,11 @@ public class OpenApiController {
 	 * 构建操作信息
 	 */
 	private io.swagger.v3.oas.models.Operation buildOperation(HandlerMethod handlerMethod) {
-		io.swagger.v3.oas.models.Operation operation = new io.swagger.v3.oas.models.Operation();
-		Method method = handlerMethod.getMethod();
+		final io.swagger.v3.oas.models.Operation operation = new io.swagger.v3.oas.models.Operation();
+		final Method method = handlerMethod.getMethod();
 
 		// 解析@Operation注解
-		Operation opAnnotation = method.getAnnotation(Operation.class);
+		final Operation opAnnotation = method.getAnnotation(Operation.class);
 		if (opAnnotation != null) {
 			operation.summary(opAnnotation.summary());
 			operation.description(opAnnotation.description());
@@ -259,7 +259,7 @@ public class OpenApiController {
 		}
 
 		// 获取Controller的Tag信息
-		Tag tagAnnotation = handlerMethod.getBeanType().getAnnotation(Tag.class);
+		final Tag tagAnnotation = handlerMethod.getBeanType().getAnnotation(Tag.class);
 		if (tagAnnotation != null) {
 			operation.addTagsItem(tagAnnotation.name());
 		}
@@ -274,26 +274,26 @@ public class OpenApiController {
 	 * 构建响应信息
 	 */
 	private io.swagger.v3.oas.models.responses.ApiResponses buildResponses(HandlerMethod handlerMethod) {
-		io.swagger.v3.oas.models.responses.ApiResponses responses = new io.swagger.v3.oas.models.responses.ApiResponses();
-		Method method = handlerMethod.getMethod();
+		final io.swagger.v3.oas.models.responses.ApiResponses responses = new io.swagger.v3.oas.models.responses.ApiResponses();
+		final Method method = handlerMethod.getMethod();
 
 		// 解析@ApiResponses注解
-		ApiResponses apiResponsesAnnotation = method.getAnnotation(ApiResponses.class);
+		final ApiResponses apiResponsesAnnotation = method.getAnnotation(ApiResponses.class);
 		if (apiResponsesAnnotation != null) {
-			for (ApiResponse apiResponse : apiResponsesAnnotation.value()) {
-				io.swagger.v3.oas.models.responses.ApiResponse response = 
+			for (final ApiResponse apiResponse : apiResponsesAnnotation.value()) {
+				final io.swagger.v3.oas.models.responses.ApiResponse response = 
 					new io.swagger.v3.oas.models.responses.ApiResponse();
 				response.description(apiResponse.description());
 				
 				// 如果有content定义，添加媒体类型
 				if (apiResponse.content().length > 0) {
-					Content content = new Content();
-					for (io.swagger.v3.oas.annotations.media.Content contentAnnotation : apiResponse.content()) {
-						io.swagger.v3.oas.models.media.MediaType mediaTypeObj = new io.swagger.v3.oas.models.media.MediaType();
+					final Content content = new Content();
+					for (final io.swagger.v3.oas.annotations.media.Content contentAnnotation : apiResponse.content()) {
+						final io.swagger.v3.oas.models.media.MediaType mediaTypeObj = new io.swagger.v3.oas.models.media.MediaType();
 						
 						// 生成Schema
 						if (contentAnnotation.schema().implementation() != Void.class) {
-							Schema<?> schema = generateSchemaFromClass(contentAnnotation.schema().implementation());
+							final Schema<?> schema = generateSchemaFromClass(contentAnnotation.schema().implementation());
 							mediaTypeObj.schema(schema);
 						}
 						
@@ -313,16 +313,16 @@ public class OpenApiController {
 
 		// 如果没有@ApiResponses注解，根据返回类型生成默认响应
 		if (responses.isEmpty()) {
-			io.swagger.v3.oas.models.responses.ApiResponse defaultResponse = 
+			final io.swagger.v3.oas.models.responses.ApiResponse defaultResponse = 
 				new io.swagger.v3.oas.models.responses.ApiResponse();
 			defaultResponse.description("成功");
 
 			// 生成返回类型的Schema
-			Class<?> returnType = getActualReturnType(method);
+			final Class<?> returnType = getActualReturnType(method);
 			if (returnType != null && returnType != Void.class && returnType != void.class) {
-				Content content = new Content();
-				io.swagger.v3.oas.models.media.MediaType mediaTypeObj = new io.swagger.v3.oas.models.media.MediaType();
-				Schema<?> schema = generateSchemaFromClass(returnType);
+				final Content content = new Content();
+				final io.swagger.v3.oas.models.media.MediaType mediaTypeObj = new io.swagger.v3.oas.models.media.MediaType();
+				final Schema<?> schema = generateSchemaFromClass(returnType);
 				mediaTypeObj.schema(schema);
 				content.addMediaType("application/json", mediaTypeObj);
 				defaultResponse.content(content);
@@ -338,17 +338,17 @@ public class OpenApiController {
 	 * 获取方法的实际返回类型
 	 */
 	private Class<?> getActualReturnType(Method method) {
-		Type returnType = method.getGenericReturnType();
+		final Type returnType = method.getGenericReturnType();
 		
 		// 处理ResponseEntity<T>
 		if (returnType instanceof ParameterizedType) {
-			ParameterizedType paramType = (ParameterizedType) returnType;
-			Type rawType = paramType.getRawType();
+			final ParameterizedType paramType = (ParameterizedType) returnType;
+			final Type rawType = paramType.getRawType();
 			
 			if (rawType == ResponseEntity.class) {
-				Type[] actualTypes = paramType.getActualTypeArguments();
+				final Type[] actualTypes = paramType.getActualTypeArguments();
 				if (actualTypes.length > 0) {
-					Type actualType = actualTypes[0];
+					final Type actualType = actualTypes[0];
 					if (actualType instanceof Class) {
 						return (Class<?>) actualType;
 					}
@@ -373,12 +373,12 @@ public class OpenApiController {
 		}
 
 		// 获取缓存的Schema
-		Map<String, Schema<?>> schemas = getCachedSchemas();
-		String schemaName = clazz.getSimpleName();
+		final Map<String, Schema<?>> schemas = getCachedSchemas();
+		final String schemaName = clazz.getSimpleName();
 		
 		// 如果已经存在，返回引用
 		if (schemas.containsKey(schemaName)) {
-			Schema<?> refSchema = new Schema<>();
+			final Schema<?> refSchema = new Schema<>();
 			refSchema.$ref("#/components/schemas/" + schemaName);
 			return refSchema;
 		}
@@ -388,14 +388,14 @@ public class OpenApiController {
 		
 		// 返回对主Schema的引用
 		if (schemas.containsKey(schemaName)) {
-			Schema<?> refSchema = new Schema<>();
+			final Schema<?> refSchema = new Schema<>();
 			refSchema.$ref("#/components/schemas/" + schemaName);
 			return refSchema;
 		}
 
 		logger.warn("无法为类 {} 生成Schema，使用简单Schema", clazz.getName());
 		// 如果生成失败，返回简单的Schema
-		Schema<?> simpleSchema = new Schema<>();
+		final Schema<?> simpleSchema = new Schema<>();
 		simpleSchema.type("object");
 		return simpleSchema;
 	}
@@ -403,12 +403,13 @@ public class OpenApiController {
 	/**
 	 * 递归生成Schema，确保所有依赖的类都被处理
 	 */
+	@SuppressWarnings("rawtypes")
 	private void generateSchemaRecursively(Class<?> clazz, Map<String, Schema<?>> schemas) {
 		if (clazz == null || isSimpleType(clazz) || clazz.isPrimitive()) {
 			return;
 		}
 
-		String schemaName = clazz.getSimpleName();
+		final String schemaName = clazz.getSimpleName();
 		
 		// 如果已经处理过，跳过
 		if (schemas.containsKey(schemaName)) {
@@ -418,12 +419,12 @@ public class OpenApiController {
 		logger.debug("递归生成Schema: {}", schemaName);
 
 		// 生成当前类的Schema
-		ModelConverters converters = ModelConverters.getInstance();
-		Map<String, Schema> resolvedSchemas = converters.read(clazz);
+		final ModelConverters converters = ModelConverters.getInstance();
+		final Map<String, Schema> resolvedSchemas = converters.read(clazz);
 		
 		if (resolvedSchemas != null && !resolvedSchemas.isEmpty()) {
 			// 缓存所有生成的Schema
-			for (Map.Entry<String, Schema> entry : resolvedSchemas.entrySet()) {
+			for (final Map.Entry<String, Schema> entry : resolvedSchemas.entrySet()) {
 				if (!schemas.containsKey(entry.getKey())) {
 					schemas.put(entry.getKey(), entry.getValue());
 					logger.debug("缓存Schema: {}", entry.getKey());
@@ -443,10 +444,10 @@ public class OpenApiController {
 		
 		try {
 			// 先尝试通过getter方法分析
-			List<MethodUtil.MethodInfoOfGetter> getters = MethodUtil.findGetter(clazz);
+			final List<MethodUtil.MethodInfoOfGetter> getters = MethodUtil.findGetter(clazz);
 			
-			for (MethodUtil.MethodInfoOfGetter getter : getters) {
-				Class<?> returnType = getter.getReturnTypeClass();
+			for (final MethodUtil.MethodInfoOfGetter getter : getters) {
+				final Class<?> returnType = getter.getReturnTypeClass();
 				processNestedType(returnType, getter.getPropName(), schemas);
 			}
 			
@@ -455,7 +456,7 @@ public class OpenApiController {
 				analyzeFieldTypes(clazz, schemas);
 			}
 			
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			logger.warn("分析类 {} 的嵌套类型时出错: {}", clazz.getSimpleName(), e.getMessage());
 		}
 	}
@@ -466,8 +467,8 @@ public class OpenApiController {
 	private void analyzeFieldTypes(Class<?> clazz, Map<String, Schema<?>> schemas) {
 		logger.debug("分析类 {} 的字段类型", clazz.getSimpleName());
 		
-		Field[] fields = clazz.getDeclaredFields();
-		for (Field field : fields) {
+		final Field[] fields = clazz.getDeclaredFields();
+		for (final Field field : fields) {
 			// 跳过静态字段、常量等
 			if (java.lang.reflect.Modifier.isStatic(field.getModifiers()) ||
 				java.lang.reflect.Modifier.isFinal(field.getModifiers()) ||
@@ -490,11 +491,11 @@ public class OpenApiController {
 	 * 获取集合或数组的元素类型
 	 */
 	private Class<?> getCollectionElementType(Field field) {
-		Type genericType = field.getGenericType();
+		final Type genericType = field.getGenericType();
 		
 		if (genericType instanceof ParameterizedType) {
-			ParameterizedType paramType = (ParameterizedType) genericType;
-			Type[] actualTypes = paramType.getActualTypeArguments();
+			final ParameterizedType paramType = (ParameterizedType) genericType;
+			final Type[] actualTypes = paramType.getActualTypeArguments();
 			if (actualTypes.length > 0 && actualTypes[0] instanceof Class) {
 				return (Class<?>) actualTypes[0];
 			}
@@ -543,7 +544,7 @@ public class OpenApiController {
 	 * 为简单类型创建Schema
 	 */
 	private Schema<?> createSimpleSchema(Class<?> clazz) {
-		Schema<?> schema = new Schema<>();
+		final Schema<?> schema = new Schema<>();
 		
 		if (clazz.isPrimitive() || Number.class.isAssignableFrom(clazz)) {
 			if (clazz == int.class || clazz == Integer.class || 
@@ -581,15 +582,16 @@ public class OpenApiController {
 	/**
 	 * 构建组件信息
 	 */
+	@SuppressWarnings("rawtypes")
 	private Components buildComponents() {
-		Components components = new Components();
+		final Components components = new Components();
 		
 		// 添加Schema定义
-		Map<String, Schema<?>> schemas = getCachedSchemas();
+		final Map<String, Schema<?>> schemas = getCachedSchemas();
 		if (!schemas.isEmpty()) {
 			// 转换类型以满足Components.schemas()的要求
-			Map<String, Schema> rawSchemas = new LinkedHashMap<>();
-			for (Map.Entry<String, Schema<?>> entry : schemas.entrySet()) {
+			final Map<String, Schema> rawSchemas = new LinkedHashMap<>();
+			for (final Map.Entry<String, Schema<?>> entry : schemas.entrySet()) {
 				rawSchemas.put(entry.getKey(), entry.getValue());
 			}
 			components.schemas(rawSchemas);

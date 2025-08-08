@@ -13,7 +13,7 @@ import org.springframework.web.context.support.AnnotationConfigWebApplicationCon
 import org.springframework.web.servlet.DispatcherServlet;
 
 import com.liangwj.spring.jmxConsole.config.JmxConsoleProperties;
-import com.liangwj.spring.jmxConsole.config.MyWebConfiguration;
+import com.liangwj.spring.jmxConsole.config.MyControllerConfiguration;
 
 import jakarta.servlet.ServletRegistration;
 
@@ -59,7 +59,7 @@ public class JmxConsoleServer implements InitializingBean, DisposableBean, Appli
                 webContext.setParent(parentContext);
                 webContext.setServletContext(servletContext);
                 // 注册Web配置（包含手动的OpenAPI端点）
-				webContext.register(MyWebConfiguration.class);
+				webContext.register(MyControllerConfiguration.class);
                 webContext.refresh();
                 
                 final DispatcherServlet dispatcherServlet = new DispatcherServlet(webContext);
