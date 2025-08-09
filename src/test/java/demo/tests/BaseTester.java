@@ -17,4 +17,23 @@ public abstract class BaseTester {
 	/** 当系统初始化完成后 */
 	public abstract void run();
 
+	/**
+	 * 获取主项目的完整URL
+	 * 
+	 * @param path 请求路径
+	 * @return 完整的URL
+	 */
+	protected String getFullUrlMainProject(String path) {
+		return String.format("http://localhost:%d/%s", serverProp.getPort(), path);
+	}
+
+	/**
+	 * 获取JMX控制台项目的完整URL
+	 * 
+	 * @param path 请求路径
+	 * @return 完整的URL
+	 */
+	protected String getFullUrlJmxConsoleProject(String path) {
+		return String.format("http://localhost:%d/%s", jmxConsoleProperties.getPort(), path);
+	}
 }
