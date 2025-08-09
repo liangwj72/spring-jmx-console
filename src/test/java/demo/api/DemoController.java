@@ -1,4 +1,4 @@
-package demo;
+package demo.api;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,4 +22,12 @@ public class DemoController {
     public ResponseEntity<DemoResponse> health() {
       return ResponseEntity.ok(new DemoResponse("演示api"));
     }
+
+    @GetMapping("/api/demo")
+    @Operation(summary = "演示api", description = "演示api")
+    @ApiResponse(responseCode = "200", description = "演示api")
+    public ResponseEntity<DemoResponse> demo() {
+      return ResponseEntity.ok(new DemoResponse("/api/demo"));
+    }
+
 } 

@@ -1,7 +1,5 @@
 package demo;
 
-import java.util.Arrays;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springdoc.core.properties.SwaggerUiConfigProperties;
@@ -23,9 +21,6 @@ import jakarta.annotation.PostConstruct;
 @EnableAutoConfiguration
 public class Application {
 
-	private static final String FOREVER_ARG = "forever"; // 持续运行参数
-	private static final int AUTO_STOP_DELAY = 10000; // 自动停止延迟时间，单位毫秒
-
 	private static final Logger logger = LoggerFactory.getLogger(Application.class);
 
 	@Autowired
@@ -37,30 +32,9 @@ public class Application {
 	@Autowired(required = false)
 	private SwaggerUiConfigProperties swaggerUiConfigProperties;
 
-
 	public static void main(String[] args) {
 		final SpringApplication app = new SpringApplication(Application.class);
 		app.run(args);
-
-		// 如果没有 forever 参数，则自动退出
-		if (!Arrays.asList(args).contains(FOREVER_ARG)) {
-			logger.info("Auto-stop: Starting application without forever parameter, will exit after {} seconds",
-					AUTO_STOP_DELAY / 1000);
-
-			// 在新线程中执行延时关闭
-			new Thread(() -> {
-				try {
-					Thread.sleep(AUTO_STOP_DELAY);
-					logger.info("Auto-stop: Shutting down application after {} seconds", AUTO_STOP_DELAY / 1000);
-					System.exit(0);
-				} catch (final InterruptedException e) {
-					Thread.currentThread().interrupt();
-					logger.error("Auto-stop interrupted", e);
-				}
-			}).start();
-		} else {
-			logger.info("Forever mode: Application will run continuously until manually stopped");
-		}
 	}
 
 	@PostConstruct
@@ -79,6 +53,5 @@ public class Application {
 		} else {
 			logger.info("JMX Console is not enabled");
 		}
-
 	}
 }

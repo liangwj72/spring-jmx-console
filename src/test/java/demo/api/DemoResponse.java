@@ -1,4 +1,4 @@
-package demo;
+package demo.api;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
