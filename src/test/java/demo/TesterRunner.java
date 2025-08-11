@@ -16,22 +16,19 @@ public class TesterRunner {
 
 	private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(TesterRunner.class);
 
-	private static final String DEFAUTER_TESTER = Forever.class.getSimpleName(); // 默认测试器：持续运行参数
-
 	@Autowired
 	private ApplicationContext applicationContext;
+
+	@Autowired
+	private Forever defaultTester; // 默认测试器实例
 
 	private String testerName;
 
 	public TesterRunner(ApplicationArguments args) {
 		if (args.getSourceArgs().length > 0) {
 			// 如果有参数，取第一个参数作为测试器名称
-			log.info("根据运行时的参数获得测试器名：{}", args.getSourceArgs()[0]);
-			this.testerName = args.getSourceArgs()[0];
-		} else {
-			log.info("运行时，没有参数指定测试器名，使用默认测试器：{}", DEFAUTER_TESTER);
-			// 否则使用默认测试器
-			this.testerName = DEFAUTER_TESTER;
+			this.testerName = args.getSourceArgs()[0].toLowerCase();
+			log.info("根据运行时的参数获得测试器名：{}", this.testerName);
 		}
 	}
 
@@ -40,7 +37,20 @@ public class TesterRunner {
 		BaseTester tester = getTester();
 
 		log.info("运行测试器：{}", tester.getClass().getSimpleName());
-		tester.run();
+		try {
+			boolean isQuit = tester.run();
+
+			if (isQuit) {
+				log.info("测试器运行完成，退出程序");
+				System.exit(0); // 测试器运行完成后退出程序
+			} else {
+				log.info("测试器运行完成，但不退出程序");
+			}
+
+		} catch (Exception e) {
+			log.error("测试器运行失败：{}", e.getMessage(), e);
+			System.exit(1); // 运行失败时退出程序
+		}
 	}
 
 	/**
@@ -51,18 +61,20 @@ public class TesterRunner {
 	 */
 	public BaseTester getTester() {
 
+		// 获取所有的测试器，并构造一个 Map，以测试器类名为键，测试器实例为值
 		var allTester = applicationContext.getBeansOfType(BaseTester.class).values();
 		Map<String, BaseTester> testerMap = new HashMap<>();
 		for (BaseTester tester : allTester) {
-			testerMap.put(tester.getClass().getSimpleName(), tester);
+			// 忽略大小写
+			testerMap.put(tester.getClass().getSimpleName().toLowerCase(), tester);
 		}
-		if (testerMap.containsKey(testerName)) {
+
+		if (this.testerName != null && testerMap.containsKey(testerName)) {
 			// 如果 testerMap 中包含指定的测试器名称，则返回对应的测试器实例
 			return testerMap.get(testerName);
 		} else {
-			// 如果没有找到指定的测试器名称，则返回默认的测试器实例
-			log.debug("没有找到指定的测试器：{}，使用默认的测试器：{}", testerName, DEFAUTER_TESTER);
-			return testerMap.get(DEFAUTER_TESTER);
+			log.debug("没有找到指定的测试器：{}，使用默认的测试器：{}", testerName, this.defaultTester.getClass().getSimpleName());
+			return this.defaultTester;
 		}
 	}
 }

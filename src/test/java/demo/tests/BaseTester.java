@@ -2,6 +2,7 @@ package demo.tests;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
+import org.springframework.web.client.RestTemplate;
 
 import com.liangwj.spring.jmxConsole.config.JmxConsoleProperties;
 
@@ -14,8 +15,15 @@ public abstract class BaseTester {
 	@Autowired
 	protected ServerProperties serverProp;
 
-	/** 当系统初始化完成后 */
-	public abstract void run();
+	@Autowired
+	protected RestTemplate restTemplate;
+
+	/**
+	 * 运行测试器
+	 * 
+	 * @return 运行完成后是否推出整个系统
+	 */
+	public abstract boolean run() throws Exception;
 
 	/**
 	 * 获取主项目的完整URL
